@@ -1,4 +1,4 @@
-# Jenkins-Plugin | Copy-Artifact |
+# Jenkins-Plugin | Copy-Artifact
 
     This plugin adds a build step to copy artifacts from another Jenkins project.
     allowing you to easily share files between different builds.
