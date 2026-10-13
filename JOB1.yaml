@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    options {
+        copyArtifactPermission('JOB1')
+    }
+
+    environment {
+        max = 50
+        num1 = "${Math.abs(new Random().nextInt(env.max.toInteger() + 1)).toString()}"
+        num2 = "${Math.abs(new Random().nextInt(env.max.toInteger() + 1)).toString()}"
+    }
+    
+    stages {
+        stage('Trigger JOB1') {
+            steps {
+                script {
+
+                    echo "Sending numbers ${env.num1} and ${env.num2} to JOB2..."
+                    
+                    def job2Run = build job: 'JOB2', 
+                                       wait: true, 
+                                       propagate: false, 
+                                       parameters: [
+                                           string(name: 'num1', value: env.num1), 
+                                           string(name: 'num2', value: env.num2)
+                                       ]
+                    
+                    env.JOB2_BUILD_NUMBER = job2Run.getNumber().toString()
+                    env.JOB2_RESULT = job2Run.getResult()
+                }
+            }
+        }
+        
+        stage('Get Data Back from JOB2') {
+            steps {
+                script {
+                    if (env.JOB2_RESULT == 'SUCCESS') {
+                        copyArtifacts(
+                            projectName: 'JOB2', 
+                            filter: 'result.txt', 
+                            selector: specific(env.JOB2_BUILD_NUMBER)
+                        )
+                        
+                        def returnedData = readFile('result.txt').trim()
+                        echo "Result from JOB2: ${env.num1} * ${env.num2} = ${returnedData}"
+                        
+                    } else {
+                        currentBuild.result = 'FAILURE'
+                        error "JOB2 build ${env.JOB2_BUILD_NUMBER} failed. Please check JOB2 console logs for the root cause."
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+  
+    parameters {
+        string(name: 'num1', defaultValue: '', description: '1Data received from JOB11')
+        string(name: 'num2', defaultValue: '', description: '2Data received from JOB11')
+    }
+    
+    stages {
+        stage('Process Data') {
+            steps {
+                echo "num1 - Received from JOB1: ${params.num1}"
+                echo "num2 - Received from JOB1: ${params.num2}"
+                
+                script {
+                    def calculation = (params.num1).toInteger() * (params.num2).toInteger()
+                    
+                    def dataToReturn = calculation.toString()
+                    
+                    writeFile file: 'result.txt', text: dataToReturn
+
+                    echo "calculation result = ${calculation}"
+                }
+            }
+        }
+    }
+        
+    post {
+      success {
+        archiveArtifacts artifacts: 'result.txt', fingerprint: true
+              }
+        }
+    }
