@@ -14,7 +14,6 @@ pipeline {
                 
                 script {
                     def calculation = (params.num1).toInteger() * (params.num2).toInteger()
-                    
                     def dataToReturn = calculation.toString()
                     
                     writeFile file: 'result.txt', text: dataToReturn
