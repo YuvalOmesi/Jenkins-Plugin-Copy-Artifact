@@ -106,3 +106,11 @@
 >
 > • [JOB2](JOB2.yaml): Receives the two numbers, multiplies them, saves the output to result.txt, and archives it as an artifact
 
+
+# 🔗 Useful Links
+
+> [Jenkins Pipeline Documentation](https://www.jenkins.io/doc/book/pipeline/)
+
+> [Official Plugin Page](https://plugins.jenkins.io/copyartifact/)
+
+> [Copy Artifact Plugin From Pipeline Documentation](https://www.jenkins.io/doc/pipeline/steps/copyartifact/)
